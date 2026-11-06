@@ -1,0 +1,41 @@
+! R1 router-on-a-stick reference configuration
+! Adjust interface names for your selected router.
+enable
+configure terminal
+hostname R1
+no ip domain-lookup
+
+interface gigabitEthernet0/0
+ description 802.1Q trunk to SW1
+ no shutdown
+ exit
+
+interface gigabitEthernet0/0.10
+ description VLAN 10 gateway
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ exit
+
+interface gigabitEthernet0/0.20
+ description VLAN 20 gateway
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ exit
+
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp excluded-address 192.168.20.1 192.168.20.20
+
+ip dhcp pool VLAN10-USERS
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.10.10
+ exit
+
+ip dhcp pool VLAN20-USERS
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+ dns-server 192.168.10.10
+ exit
+
+end
+write memory
